@@ -5,7 +5,7 @@ startSymbol = "S"
 nonTerminals = "SABCDE"
 terminals = "abcde"
 # productions LHS -> RHS1 | RHS2 | ... are specified by a dictionary with a LHS nonterminal as key
-# and a list for each alternative RHS and values.
+# and a list of alternative RHS's as values.
 # A single RHS is specified by a list of terminals. An empty list represents the empty word epsilon
 productions = {
  'S' : [['S', 'A'], ['B'], ['C']],
@@ -14,18 +14,22 @@ productions = {
  'C' : [['D']],
  'D' : [['C']],
 }
-nonLL1Grammar = Grammar(startSymbol=startSymbol, terminals=terminals, nonTerminals=nonTerminals, productions=productions)
 
 # the resulting grammar is reduced, i.e., unproductive productions and non-reachable 
 # nonterminals are filtered out
+nonLL1Grammar = Grammar(startSymbol=startSymbol, terminals=terminals, nonTerminals=nonTerminals, productions=productions)
+
+# print information about the specified grammar
 print(nonLL1Grammar)
 
-# the grammar is analyzed if has the property of beeing LL(1), which allows
+# the grammar is analyzed if it has the property of beeing LL(1), which allows
 # to automatically generate an LL(1)-Parser from the grammar
 if not nonLL1Grammar.isLL1():
     nonLL1Grammar.printConflicts()
 
+
 # example specification for a LL1 parser which parses regular expressions
+
 class CharacterRange:
     def __new__(cls, start, end):
         return [chr(integer) for integer in range(ord(start), ord(end)+1)]

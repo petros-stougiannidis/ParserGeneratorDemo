@@ -6,11 +6,11 @@ from itertools import combinations
 class Grammar:
 
     def __init__(self, startSymbol, terminals, nonTerminals, productions):
-        self.startSymbol = startSymbol
-
+        
         if not startSymbol in set(nonTerminals):
             raise ValueError(f"Start symbol {startSymbol} {unicode.notElementOf} N")
 
+        # TODO: find unique representations for "$" and "S'"
         for symbol in {unicode.epsilon, "$"}:
             if symbol in set(terminals):
                 raise ValueError(f"{symbol} is not allowed as a terminal symbol")
@@ -22,6 +22,8 @@ class Grammar:
         if set(terminals) & set(nonTerminals):
             raise ValueError(f"The set of terminals and nonterminals are not disjoint: {unicode.Sigma} {unicode.setUnion} N = {set(terminals) & set(nonTerminals)}")
 
+        # a context free grammar is defined by:
+        self.startSymbol = startSymbol
         self.terminals = set(terminals)
         self.nonTerminals = set(nonTerminals)
         self.delta = defaultdict(set)
@@ -29,6 +31,7 @@ class Grammar:
         for leftHandSide, alternativeRightHandSides in productions.items():
             self.delta[leftHandSide] = set(map(Sequence, alternativeRightHandSides))
         
+        # reduce and analyse grammar
         self.reduce()
         self.computeEmptyAttributes()
         self.computeFirst1Sets()
